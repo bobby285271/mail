@@ -290,7 +290,7 @@ public class Mail.MessageListItem : Gtk.ListBoxRow {
         expanded = false;
         show_all ();
 
-        avatar.set_loadable_icon (new GravatarIcon (parsed_address, get_style_context ().get_scale ()));
+        download_gravatar.begin (parsed_address, avatar.size);
 
         /* Override default handler to stop event propagation. Otherwise clicking the menu will
            expand or collapse the MessageListItem. */
@@ -345,6 +345,31 @@ public class Mail.MessageListItem : Gtk.ListBoxRow {
             } catch (Error e) {
                 warning ("Failed to open link: %s", e.message);
             }
+        });
+    }
+
+    private async void download_gravatar (string address, int size) {
+        if (avatars[address] == null) {
+            var uri = "https://secure.gravatar.com/avatar/%s?d=404&s=%d".printf (
+                Checksum.compute_for_string (ChecksumType.MD5, address.strip ().down ()),
+                size * get_style_context ().get_scale ()
+            );
+
+            var server_file = File.new_for_uri (uri);
+            var path = Path.build_filename (Environment.get_tmp_dir (), server_file.get_basename ());
+            var local_file = File.new_for_path (path);
+
+            try {
+                yield server_file.copy_async (local_file, FileCopyFlags.OVERWRITE, Priority.DEFAULT, null);
+                avatars[address] = new Gdk.Pixbuf.from_file_at_scale (path, size, size, true);
+            } catch (Error e) {
+                debug ("Unable to fetch gravatar: %s", e.message);
+                return;
+            }
+        }
+
+        avatar.set_image_load_func (() => {
+            return avatars[address];
         });
     }
 
