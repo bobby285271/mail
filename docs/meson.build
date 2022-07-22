@@ -1,5 +1,11 @@
 valadoc = find_program('valadoc')
 
+if get_option('soup3')
+    webkit2gtk_str = 'webkit2gtk-4.1'
+else
+    webkit2gtk_str = 'webkit2gtk-4.0'
+endif
+
 basic_command = [
     valadoc,
     '--force',
@@ -8,9 +14,10 @@ basic_command = [
     '--package-version', meson.project_version(),
     '--driver', meson.get_compiler('vala').version(),
     '--pkg', 'folks',
-    '--pkg', 'webkit2gtk-4.0',
+    '--pkg', webkit2gtk_str,
     '--pkg', 'libedataserverui-1.2',
     '--pkg', 'libedataserver-1.2',
+    '--pkg', 'libhandy-1',
     '--pkg', 'camel-1.2',
     '--pkg', 'gee-0.8', 
     '--pkg', 'granite',
@@ -30,7 +37,7 @@ all_doc_target = custom_target(
         '@INPUT@'
     ],
     build_by_default: true,
-    input: vala_files,
+    input: [vala_files, config_file],
     output: 'full'
 )
 
