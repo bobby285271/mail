@@ -378,7 +378,7 @@ public class Mail.ComposerWidget : Gtk.Grid {
             foreach (unowned string param in params) {
                 var terms = param.split ("=");
                 if (terms.length == 2) {
-                    result[terms[0].down ()] = (Soup.URI.decode (terms[1]));
+                    result[terms[0].down ()] = (GLib.Uri.unescape_string (terms[1]));
                 } else {
                     critical ("Invalid mailto URL");
                 }
@@ -486,7 +486,7 @@ public class Mail.ComposerWidget : Gtk.Grid {
     private void on_mouse_target_changed (WebKit.WebView web_view, WebKit.HitTestResult hit_test, uint mods) {
         if (hit_test.context_is_link ()) {
             var url = hit_test.get_link_uri ();
-            var hover_url = url != null ? Soup.URI.decode (url) : null;
+            var hover_url = url != null ? GLib.Uri.unescape_string (url) : null;
 
             if (hover_url == null) {
                 message_url_overlay.hide ();

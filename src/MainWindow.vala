@@ -240,7 +240,7 @@ public class Mail.MainWindow : Hdy.ApplicationWindow {
         message_overlay.no_show_all = true;
 
         message_list_box.hovering_over_link.connect ((label, url) => {
-            var hover_url = url != null ? Soup.URI.decode (url) : null;
+            var hover_url = url != null ? GLib.Uri.unescape_string (url) : null;
 
             if (hover_url == null) {
                 message_overlay.hide ();

@@ -69,22 +69,22 @@ public class Mail.Application : Gtk.Application {
             string to = null;
 
             try {
-                Soup.URI mailto = new Soup.URI (mailto_uri);
+                GLib.Uri mailto = GLib.Uri.parse (mailto_uri, GLib.UriFlags.NONE);
                 if (mailto == null) {
                     throw new OptionError.BAD_VALUE ("Argument is not a URL.");
                 }
 
-                if (mailto.scheme != "mailto") {
+                if (mailto.get_scheme () != "mailto") {
                     throw new OptionError.BAD_VALUE ("Cannot open non-mailto: URL");
                 }
 
-                to = Soup.URI.decode (mailto.path);
+                to = GLib.Uri.unescape_string (mailto.get_path ());
 
                 if (main_window.is_session_started) {
-                    new ComposerWindow (main_window, to, mailto.query).show_all ();
+                    new ComposerWindow (main_window, to, mailto.get_query ()).show_all ();
                 } else {
                     main_window.session_started.connect (() => {
-                        new ComposerWindow (main_window, to, mailto.query).show_all ();
+                        new ComposerWindow (main_window, to, mailto.get_query ()).show_all ();
                     });
                 }
             } catch (OptionError e) {

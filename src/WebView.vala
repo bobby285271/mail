@@ -246,7 +246,7 @@ public class Mail.WebView : WebKit.WebView {
     }
 
     private bool handle_internal_response (WebKit.URISchemeRequest request) {
-        string name = Soup.URI.decode (request.get_path ());
+        string name = GLib.Uri.unescape_string (request.get_path ());
         InputStream? buf = this.internal_resources[name];
         if (buf != null) {
             request.finish (buf, -1, null);
