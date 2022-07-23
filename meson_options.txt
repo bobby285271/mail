@@ -1,2 +1,1 @@
 option ('documentation', type : 'boolean', value : false)
-option ('soup3', type : 'boolean', value : false)
