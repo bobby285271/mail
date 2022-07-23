@@ -1,6 +1,6 @@
 valadoc = find_program('valadoc')
 
-if get_option('soup3')
+if libedataserverui_dep.version().version_compare('>=3.45.1')
     webkit2gtk_str = 'webkit2gtk-4.1'
 else
     webkit2gtk_str = 'webkit2gtk-4.0'

@@ -17,7 +17,7 @@ handy_dep = dependency('libhandy-1', version: '>=1.1.90')
 camel_dep = dependency('camel-1.2', version: '>= 3.28')
 libedataserver_dep = dependency('libedataserver-1.2', version: '>= 3.28')
 libedataserverui_dep = dependency('libedataserverui-1.2', version: '>= 3.28')
-if get_option('soup3')
+if libedataserverui_dep.version().version_compare('>=3.45.1')
     webkit2_dep = dependency('webkit2gtk-4.1')
     webkit2_web_extension_dep = dependency('webkit2gtk-web-extension-4.1')
 else
